@@ -86,8 +86,14 @@ customElements.define('os-camera', class extends HTMLElement {
         result.width = this.#preview.videoWidth;
         result.height = this.#preview.videoHeight;
         result.getContext("2d").drawImage(this.#preview, 0, 0);
-        console.log(result.toDataURL("image/jpeg"));
-        // TODO Save this to File system
+        const now = new Date();
+        const name = now.getUTCFullYear() +
+            now.getUTCDate().toString().padStart(2, "0") +
+            (now.getUTCMonth() + 1).toString().padStart(2, "0") +
+            now.getUTCHours().toString().padStart(2, "0") +
+            now.getUTCMinutes().toString().padStart(2, "0") + "_" +
+            now.valueOf();
+        OsFiles.instance.saveFile({name: name + ".jpg", contents: result.toDataURL("image/jpeg")});
     }
 
     checkAndStart() {

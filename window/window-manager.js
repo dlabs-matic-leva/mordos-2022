@@ -1,5 +1,5 @@
 customElements.define('os-window-manager', class extends HTMLElement {
-    #activeApps = ["os-camera"]
+    #activeApps = ["os-camera", "os-files"]
 
 
     #render() {
