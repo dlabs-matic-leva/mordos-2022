@@ -1,0 +1,8 @@
+os-window-manager {
+    width: 100%;
+    height: 100%;
+    display: grid;
+}
+os-window-manager > * {
+    place-content: stretch;
+}

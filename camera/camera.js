@@ -1,4 +1,4 @@
-customElements.define('os-camera', class Files extends HTMLElement {
+customElements.define('os-camera', class extends HTMLElement {
     constructor() {
         super();
         this.shot = this.shot.bind(this);
@@ -8,21 +8,24 @@ customElements.define('os-camera', class Files extends HTMLElement {
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
-.camera {
+:host {
     display: grid;
 }
-.camera > * {
+.camera-preview , .camera-permission, .camera-button{
     grid-column: 1 / 1;
     grid-row: 1 / 1;
 }
 .camera-preview {
     pointer-events: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .camera-permission {
     align-self: center;
     justify-self: center;
-    padding: var(--padding);
-    margin-bottom: calc(var(--spacing) * 8 + var(--padding));
+    padding: var(--spacing);
+    margin-bottom: calc(var(--spacing) * 8 + var(--spacing));
 }
 .hidden {
     display: none;
@@ -30,7 +33,7 @@ customElements.define('os-camera', class Files extends HTMLElement {
 .camera-button {
     align-self: end;
     justify-self: center;
-    margin-bottom: var(--padding);
+    margin-bottom: var(--spacing);
     
     width: calc(var(--spacing) * 8);
     height: calc(var(--spacing) * 8);
@@ -40,18 +43,13 @@ customElements.define('os-camera', class Files extends HTMLElement {
     border: solid 1px var(--black);
 }
 </style>
-<os-window>
-<span slot="title">Camera</span>
-<div class="camera">
-    <video class="camera-preview" autoplay playsinline></video>
-    <div class="camera-permission hidden">
-        Camera needs your permission to access your hardware.
-        <br>
-        <button class="camera-grant-permission">Grant permission</button>
-    </div>
-    <button class="camera-button"></button>
+<video class="camera-preview" autoplay playsinline></video>
+<div class="camera-permission hidden">
+    Camera needs your permission to access your hardware.
+    <br>
+    <button class="camera-grant-permission">Grant permission</button>
 </div>
-</os-window>
+<button class="camera-button"></button>
        `;
     }
 
@@ -87,7 +85,7 @@ customElements.define('os-camera', class Files extends HTMLElement {
         const result = document.createElement("canvas")
         result.width = this.#preview.videoWidth;
         result.height = this.#preview.videoHeight;
-        result.getContext("2d").drawImage(result, 0, 0);
+        result.getContext("2d").drawImage(this.#preview, 0, 0);
         console.log(result.toDataURL("image/jpeg"));
         // TODO Save this to File system
     }
@@ -111,6 +109,4 @@ customElements.define('os-camera', class Files extends HTMLElement {
                 this.#preview.srcObject = stream;
             })
     }
-
-
 });
