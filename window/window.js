@@ -6,21 +6,12 @@ customElements.define('os-window', class Files extends HTMLElement {
         this.mouseUp = this.mouseUp.bind(this);
     }
 
-    connectedCallback() {
-        this.#render();
-        this.#title.addEventListener("mousedown", this.mouseDown)
-    }
-
-
-    disconnectedCallback() {
-        this.#title.removeEventListener("mousedown", this.mouseDown)
-    }
-
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
 .window {
     --border: var(--primary);
+    --padding: var(--spacing);
     
     position: absolute;
     display: grid;
@@ -34,14 +25,13 @@ customElements.define('os-window', class Files extends HTMLElement {
     grid-column: 1 / 2;
     grid-row: 1 / 2;
     
-    font-family: sans-serif;
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--primary);
     white-space: nowrap;
     
     margin: 0;
-    padding: var(--spacing);
+    padding: var(--padding);
     border-bottom: 1px solid var(--border);
     
     cursor: pointer;
@@ -50,8 +40,6 @@ customElements.define('os-window', class Files extends HTMLElement {
 .window-content {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
-    
-    padding: var(--spacing);
 }
 </style>
 <div class="window">
@@ -71,6 +59,15 @@ customElements.define('os-window', class Files extends HTMLElement {
 
     get #title() {
         return this.shadowRoot.querySelector(".window-title");
+    }
+
+    connectedCallback() {
+        this.#render();
+        this.#title.addEventListener("mousedown", this.mouseDown)
+    }
+
+    disconnectedCallback() {
+        this.#title.removeEventListener("mousedown", this.mouseDown)
     }
 
     mouseDown() {

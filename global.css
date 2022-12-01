@@ -16,6 +16,7 @@
     --onSecondary: var(--black);
 
     --spacing: 8px;
+    --font: sans-serif;
 }
 
 html.dark-theme {
@@ -30,4 +31,5 @@ html.dark-theme {
 body {
     margin: 0;
     background: var(--surface);
+    font-family: var(--font);
 }
