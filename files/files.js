@@ -9,8 +9,8 @@ customElements.define('os-files', class extends HTMLElement {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
 .files-preview {
-    width: calc(var(--spacing) * 2);
-    height: calc(var(--spacing) * 2);
+    max-width: calc(var(--spacing) * 2);
+    max-height: calc(var(--spacing) * 2);
     object-fit: cover;
 }
 </style>
@@ -66,7 +66,6 @@ customElements.define('os-files', class extends HTMLElement {
             entry.querySelector(".files-entry").dataset.filename = file.name;
             entry.querySelector(".files-name").textContent = file.name;
             this.#list.append(entry);
-
         })
     }
 

@@ -10,20 +10,21 @@ customElements.define('os-camera', class extends HTMLElement {
 <style>
 :host {
     display: grid;
+    background: black;
 }
 .camera-preview , .camera-permission, .camera-button{
     grid-column: 1 / 1;
     grid-row: 1 / 1;
 }
 .camera-preview {
-    pointer-events: none;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    overflow: hidden;
+    object-fit: contain;
+    pointer-events: none;
 }
 .camera-permission {
-    align-self: center;
-    justify-self: center;
+    place-self: center;
     padding: var(--spacing);
     margin-bottom: calc(var(--spacing) * 8 + var(--spacing));
 }
