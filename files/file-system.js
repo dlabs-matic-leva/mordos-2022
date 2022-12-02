@@ -40,7 +40,7 @@ class OsFiles extends HTMLElement {
     }
 
     /**
-     * @type OsFiles
+     * @returns {OsFiles}
      */
     static get instance() {
         const instance = document.querySelector("os-file-system");

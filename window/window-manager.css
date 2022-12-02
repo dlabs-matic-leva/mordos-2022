@@ -1,8 +1,118 @@
 os-window-manager {
     width: 100%;
     height: 100%;
-    display: grid;
+    display: flex;
+    flex-direction: column;
 }
-os-window-manager > * {
+
+os-window-manager .row {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+os-window-manager .column {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+os-window-manager .row, os-window-manager .column, os-window-manager .column > * {
+    flex: 1 1 0;
+    min-height: 0;
     place-content: stretch;
+}
+
+os-window-manager .row + .row::before {
+    display: block;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: var(--black);
+}
+
+os-window-manager .column + .column::before {
+    display: block;
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background: var(--black);
+}
+
+os-window-manager .templates {
+    display: none;
+}
+
+/*
+Row add (left and right edge)
+ */
+
+os-window-manager {
+    position: relative;
+}
+
+os-window-manager .row-add-before, os-window-manager .row-add-after {
+    position: absolute;
+    width: var(--spacing);
+    height: 100%;
+    cursor: cell;
+    z-index: 1;
+}
+
+os-window-manager .row-add-before {
+    left: 0;
+}
+
+os-window-manager .row-add-after {
+    right: 0;
+}
+
+os-window-manager .row-add-indicator {
+    position: absolute;
+    height: var(--spacing);
+    width: 100%;
+    background: green;
+    pointer-events: none;
+    display: none;
+    z-index: 1;
+}
+
+os-window-manager .row-add-before:hover ~ .row-add-indicator, os-window-manager .row-add-after:hover ~ .row-add-indicator {
+    display: block;
+}
+
+/*
+Row split (top and bottom edge of each row)
+ */
+
+os-window-manager .row-split-before, os-window-manager .row-split-after {
+    position: absolute;
+    height: var(--spacing);
+    width: 100%;
+    cursor: cell;
+    z-index: 1;
+}
+
+os-window-manager .row-split-before {
+    top: 0;
+}
+
+os-window-manager .row-split-after {
+    bottom: 0;
+}
+
+os-window-manager .row-split-indicator {
+    position: absolute;
+    width: var(--spacing);
+    height: 100%;
+    background: green;
+    pointer-events: none;
+    display: none;
+    z-index: 1;
+}
+
+os-window-manager .row-split-before:hover ~ .row-split-indicator, os-window-manager .row-split-after:hover ~ .row-split-indicator {
+    display: block;
 }
