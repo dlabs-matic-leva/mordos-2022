@@ -122,10 +122,9 @@ Close functionality for column
  */
 
 
-os-window-manager .column-close {
+os-window-manager .column-close, os-window-manager .column-home {
     position: absolute;
     top: var(--spacing);
-    right: var(--spacing);
     width: calc(var(--spacing) * 6);
     height: calc(var(--spacing) * 6);
     border-radius: 50%;
@@ -136,7 +135,15 @@ os-window-manager .column-close {
     opacity: 0;
 }
 
-os-window-manager .column-close:hover {
+os-window-manager .column-close:hover, os-window-manager .column-home:hover {
     transform: translate(0, 0);
     opacity: 1;
+}
+
+os-window-manager .column-close {
+    right: var(--spacing);
+}
+
+os-window-manager .column-home {
+    left: var(--spacing);
 }

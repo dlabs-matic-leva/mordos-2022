@@ -5,8 +5,6 @@ class WindowManager extends HTMLElement {
         this.onClick = this.onClick.bind(this);
     }
 
-    #activeApps = [["os-camera", "os-files"], ["os-desktop"]]
-
     #render() {
         const templates = document.createElement("div");
         templates.classList.add("templates")
@@ -20,7 +18,8 @@ class WindowManager extends HTMLElement {
 </template>
 <template id="template-column">
     <div class="column">
-        <button class="column-close">X</button>
+        <button class="column-home">🏠</button>
+        <button class="column-close">❌</button>
     </div>
 </template>
 <template id="template-row-controls">
@@ -31,7 +30,13 @@ class WindowManager extends HTMLElement {
 `;
         this.append(templates);
         this.#attachRowControls();
-        this.#updateWindows();
+
+        const rowEl = this.#rowTemplate;
+        const columnEl = this.#columnTemplate;
+        const el = document.createElement("os-desktop");
+        columnEl.append(el);
+        rowEl.append(columnEl);
+        this.append(rowEl);
     }
 
     get #rowTemplate() {
@@ -66,43 +71,29 @@ class WindowManager extends HTMLElement {
         this.append(els);
     }
 
-    #updateWindows() {
-        // TODO do partial update
-        [...this.querySelectorAll(".row")].forEach(c => c.remove());
-        this.#activeApps.forEach((row, rowIndex) => {
-            const rowEl = this.#rowTemplate;
-            rowEl.dataset.rowIndex = rowIndex.toString();
-            row.forEach((app, columnIndex) => {
-                const columnEl = this.#columnTemplate;
-                const a = document.createElement(app);
-                if (app === "os-desktop") {
-                    a.setAttribute("row", rowIndex.toString());
-                    a.setAttribute("column", columnIndex.toString());
-                }
-                columnEl.append(a)
-                const close = columnEl.querySelector(".column-close");
-                close.dataset.rowIndex = rowIndex.toString();
-                close.dataset.columnIndex = columnIndex.toString();
-                rowEl.append(columnEl)
-            })
-            this.append(rowEl);
-        });
-    }
-
-    #splitRow(index, ratio) {
-        this.#activeApps[index].splice(Math.round(this.#activeApps[index].length * ratio), 0, "os-desktop")
-        this.#updateWindows();
-    }
-
     #addRow(ratio) {
-        this.#activeApps.splice(Math.round(this.#activeApps.length * ratio), 0, ["os-desktop"])
-        this.#updateWindows();
+        const rows = [...this.querySelectorAll(".row")];
+        const index = Math.round((rows.length - 1) * ratio)
+
+        const rowEl = this.#rowTemplate;
+        const columnEl = this.#columnTemplate;
+        columnEl.append(document.createElement("os-desktop"))
+        rowEl.append(columnEl)
+        rows[index].after(rowEl)
     }
 
-    #closeColumn(rowIndex, columnIndex) {
-        this.#activeApps[rowIndex].splice(columnIndex, 1)
-        this.#activeApps = this.#activeApps.filter(row => row.length > 0);
-        this.#updateWindows();
+    #splitRow(rowIndex, ratio) {
+        const row = [...this.querySelectorAll(".row")][rowIndex];
+        const columns = row.querySelectorAll(".column");
+        const index = Math.round((columns.length - 1) * ratio)
+
+        const columnEl = this.#columnTemplate;
+        columnEl.append(document.createElement("os-desktop"));
+        columns[index].after(columnEl);
+    }
+
+    #closeColumn(column) {
+        column.remove();
     }
 
     onHover(event) {
@@ -129,23 +120,31 @@ class WindowManager extends HTMLElement {
         if (event.target.classList.contains("row-split-before") || event.target.classList.contains("row-split-after")) {
             const {offsetX} = event;
             const ratio = offsetX / event.target.getBoundingClientRect().width;
-            const rowIndex = +event.target.parentElement.dataset.rowIndex;
+            const rows = [...this.querySelectorAll(".row")]
+            const rowIndex = rows.indexOf(event.target.parentElement);
             this.#splitRow(rowIndex, ratio)
         }
 
         if (event.target.classList.contains("column-close")) {
-            const rowIndex = +event.target.dataset.rowIndex;
-            const columnIndex = +event.target.dataset.columnIndex;
-            this.#closeColumn(rowIndex, columnIndex)
+            this.#closeColumn(event.target.parentElement)
+        }
+
+        if (event.target.classList.contains("column-home")) {
+            this.openApp(event.target, "os-desktop")
         }
     }
 
-    openApp(name, row, column) {
-        if (this.#activeApps[row][column] !== "os-desktop") {
-            throw new Error("There's no empty slot at this index!")
-        }
-        this.#activeApps[row][column] = name;
-        this.#updateWindows();
+    openApp(space, name, parameters) {
+        const column = space.parentElement;
+        const el = this.#columnTemplate;
+        const app = document.createElement(name);
+        el.append(app)
+        if (parameters)
+            parameters.split("&").forEach(param => {
+                app.setAttribute(param.split("=")[0], param.split("=")[1]);
+            })
+        column.after(el);
+        column.remove();
     }
 
     /**

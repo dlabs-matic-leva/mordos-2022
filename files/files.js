@@ -2,7 +2,7 @@ customElements.define('os-files', class extends HTMLElement {
     constructor() {
         super();
         this.onFilesChange = this.onFilesChange.bind(this);
-        this.onFileRemoved = this.onFileRemoved.bind(this);
+        this.onListClick = this.onListClick.bind(this);
     }
 
     #render() {
@@ -42,12 +42,12 @@ customElements.define('os-files', class extends HTMLElement {
         this.#render();
         this.onFilesChange();
         this.#files.addEventListener(OsFilesChanged.name, this.onFilesChange)
-        this.#list.addEventListener("click", this.onFileRemoved)
+        this.#list.addEventListener("click", this.onListClick)
     }
 
     disconnectedCallback() {
         this.#files.removeEventListener(OsFilesChanged.name, this.onFilesChange)
-        this.#list.removeEventListener("click", this.onFileRemoved)
+        this.#list.removeEventListener("click", this.onListClick)
     }
 
     onFilesChange() {
@@ -69,11 +69,10 @@ customElements.define('os-files', class extends HTMLElement {
         })
     }
 
-    onFileRemoved(event) {
-        if (!event.target.classList.contains("files-delete"))
-            return;
-
-        this.#files.deleteFile(event.target.parentElement.dataset.filename)
+    onListClick(event) {
+        if (event.target.classList.contains("files-delete")) {
+            this.#files.deleteFile(event.target.parentElement.dataset.filename)
+        }
     }
 
 });

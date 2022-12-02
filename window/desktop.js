@@ -44,6 +44,6 @@ customElements.define('os-desktop', class extends HTMLElement {
     onClick(event) {
         if (!event.target.classList.contains("app-name")) return;
 
-        WindowManager.instance.openApp(event.target.parentElement.dataset.name, +this.getAttribute("row"), +this.getAttribute("column"));
+        WindowManager.instance.openApp(this, event.target.parentElement.dataset.name);
     }
 });
