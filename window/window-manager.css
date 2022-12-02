@@ -116,3 +116,27 @@ os-window-manager .row-split-indicator {
 os-window-manager .row-split-before:hover ~ .row-split-indicator, os-window-manager .row-split-after:hover ~ .row-split-indicator {
     display: block;
 }
+
+/*
+Close functionality for column
+ */
+
+
+os-window-manager .column-close {
+    position: absolute;
+    top: var(--spacing);
+    right: var(--spacing);
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+    border-radius: 50%;
+    background: rgba(100%, 100%, 100%, 0.5);
+    border: solid 1px var(--black);
+    transform: translate(0, calc(var(--spacing) * -1));
+    transition: transform 200ms, opacity 200ms;
+    opacity: 0;
+}
+
+os-window-manager .column-close:hover {
+    transform: translate(0, 0);
+    opacity: 1;
+}

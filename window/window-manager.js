@@ -20,6 +20,7 @@ class WindowManager extends HTMLElement {
 </template>
 <template id="template-column">
     <div class="column">
+        <button class="column-close">X</button>
     </div>
 </template>
 <template id="template-row-controls">
@@ -79,6 +80,9 @@ class WindowManager extends HTMLElement {
                     a.setAttribute("column", columnIndex.toString());
                 }
                 columnEl.append(a)
+                const close = columnEl.querySelector(".column-close");
+                close.dataset.rowIndex = rowIndex.toString();
+                close.dataset.columnIndex = columnIndex.toString();
                 rowEl.append(columnEl)
             })
             this.append(rowEl);
@@ -92,6 +96,12 @@ class WindowManager extends HTMLElement {
 
     #addRow(ratio) {
         this.#activeApps.splice(Math.round(this.#activeApps.length * ratio), 0, ["os-desktop"])
+        this.#updateWindows();
+    }
+
+    #closeColumn(rowIndex, columnIndex) {
+        this.#activeApps[rowIndex].splice(columnIndex, 1)
+        this.#activeApps = this.#activeApps.filter(row => row.length > 0);
         this.#updateWindows();
     }
 
@@ -121,6 +131,12 @@ class WindowManager extends HTMLElement {
             const ratio = offsetX / event.target.getBoundingClientRect().width;
             const rowIndex = +event.target.parentElement.dataset.rowIndex;
             this.#splitRow(rowIndex, ratio)
+        }
+
+        if (event.target.classList.contains("column-close")) {
+            const rowIndex = +event.target.dataset.rowIndex;
+            const columnIndex = +event.target.dataset.columnIndex;
+            this.#closeColumn(rowIndex, columnIndex)
         }
     }
 
