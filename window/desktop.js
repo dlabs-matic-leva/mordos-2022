@@ -4,7 +4,7 @@ customElements.define('os-desktop', class extends HTMLElement {
         this.onClick = this.onClick.bind(this);
     }
 
-    #apps = ["os-camera", "os-files"];
+    #apps = ["os-camera", "os-files", "os-notes"];
 
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `

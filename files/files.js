@@ -21,6 +21,7 @@ customElements.define('os-files', class extends HTMLElement {
         <img class="files-preview">
         <span class="files-name"></span>
         <button class="files-delete">Delete</button>
+        <button class="files-open">Open</button>
     </li>
 </template>
        `;
