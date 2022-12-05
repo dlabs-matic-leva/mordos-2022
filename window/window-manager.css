@@ -142,3 +142,6 @@ os-window-manager .column-close, os-window-manager .column-home {
     border: solid 1px var(--black);
     border-radius: var(--spacing)
 }
+os-window-manager[data-num-of-apps="1"] .column-close {
+    display: none;
+}

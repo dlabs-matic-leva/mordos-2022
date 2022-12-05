@@ -1,4 +1,7 @@
 class WindowManager extends HTMLElement {
+    /** @type {MutationObserver} */
+    #observer
+
     constructor() {
         super();
         this.onHover = this.onHover.bind(this);
@@ -56,6 +59,10 @@ class WindowManager extends HTMLElement {
     }
 
     connectedCallback() {
+        this.#observer = new MutationObserver(() => {
+            this.dataset.numOfApps = this.querySelectorAll(".column").length.toString();
+        })
+        this.#observer.observe(this, { childList: true, subtree: true });
         this.#render();
         this.addEventListener("mousemove", this.onHover)
         this.addEventListener("click", this.onClick)
@@ -64,6 +71,7 @@ class WindowManager extends HTMLElement {
     disconnectedCallback() {
         this.removeEventListener("mousemove", this.onHover)
         this.removeEventListener("click", this.onClick)
+        this.#observer.disconnect();
     }
 
     #attachRowControls() {
@@ -94,8 +102,15 @@ class WindowManager extends HTMLElement {
         columns[index].after(columnEl);
     }
 
-    #closeColumn(column) {
-        column.remove();
+    #closeColumn(target) {
+        if (this.dataset.numOfApps === "1") return;
+
+        const column = this.#findClosesColumn(target);
+        const row = column.closest(".row");
+        if (row.querySelectorAll(".column").length === 1)
+            row.remove()
+        else
+            column.remove();
     }
 
     #findClosesColumn(node, selector = ".column") {
