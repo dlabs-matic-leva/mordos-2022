@@ -5,6 +5,11 @@ customElements.define('os-camera', class extends HTMLElement {
         this.start = this.start.bind(this);
     }
 
+    /**
+     * @type MediaStream | null
+     */
+    #stream = null;
+
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
@@ -78,6 +83,9 @@ customElements.define('os-camera', class extends HTMLElement {
     }
 
     disconnectedCallback() {
+        if (this.#stream) {
+            this.#stream.getTracks().forEach(track => track.stop());
+        }
         this.#button.removeEventListener("click", this.shot)
         this.#grantPermission.removeEventListener("click", this.start)
     }
@@ -112,6 +120,7 @@ customElements.define('os-camera', class extends HTMLElement {
         return navigator.mediaDevices
             .getUserMedia({video: {facingMode: "environment"}, audio: false})
             .then((stream) => {
+                this.#stream = stream;
                 this.#permission.classList.add("hidden");
                 this.#preview.srcObject = stream;
             })
