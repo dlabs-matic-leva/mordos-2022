@@ -18,6 +18,7 @@ customElements.define('os-files', class extends HTMLElement {
 <ul class="files-list"></ul>
 <template id="template-files-entry">
     <li class="files-entry">
+        <!--suppress HtmlRequiredAltAttribute, RequiredAttributes -->
         <img class="files-preview">
         <span class="files-name"></span>
         <button class="files-delete">Delete</button>
@@ -75,7 +76,11 @@ customElements.define('os-files', class extends HTMLElement {
             this.#files.deleteFile(event.target.parentElement.dataset.filename)
         }
         if (event.target.classList.contains("files-open")) {
-            WindowManager.instance.openApp(event.target, "os-notes", "filename=" + event.target.parentElement.dataset.filename)
+            const filename = event.target.parentElement.dataset.filename;
+            if (filename.endsWith(".txt"))
+                WindowManager.instance.openApp(event.target, "os-notes", "filename=" + filename)
+            if (filename.endsWith(".jpg"))
+                WindowManager.instance.openApp(event.target, "os-gallery", "filename=" + filename)
         }
     }
 

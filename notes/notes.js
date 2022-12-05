@@ -40,6 +40,14 @@ customElements.define("os-notes", class extends HTMLElement {
         return ["filename"];
     }
 
+    attributeChangedCallback(name, oldValue, newValue) {
+        if (name === "filename" && this.#notepad) {
+            const newHtml = OsFiles.instance.files.find(f => f.name === newValue).contents;
+            if (newHtml !== this.#notepad.innerHTML)
+                this.#notepad.innerHTML = newHtml;
+        }
+    }
+
     #moveCaretToEnd() {
         const range = document.createRange();
         range.selectNodeContents(this.#notepad);
@@ -49,14 +57,6 @@ customElements.define("os-notes", class extends HTMLElement {
         selection.addRange(range);
 
 
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === "filename" && this.#notepad) {
-            const newHtml = OsFiles.instance.files.find(f => f.name === newValue).contents;
-            if (newHtml !== this.#notepad.innerHTML)
-                this.#notepad.innerHTML = newHtml;
-        }
     }
 
     onChange() {
