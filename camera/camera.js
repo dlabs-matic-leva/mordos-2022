@@ -21,12 +21,34 @@ customElements.define('os-camera', class extends HTMLElement {
     grid-column: 1 / 1;
     grid-row: 1 / 1;
 }
+@keyframes shotTaken {
+ from {
+    border: 0 solid var(--white);
+    transform: scale(1);
+ }
+ 20% {
+    border: 10px solid var(--white);
+    transform: scale(1);
+ }
+ 80% {
+    border: 10px solid var(--white);
+    transform: scale(0.98);
+ }
+ to {
+    border: 0 solid var(--white);
+    transform: scale(1);
+ }
+}
 .camera-preview {
     width: 100%;
     height: 100%;
     overflow: hidden;
     object-fit: contain;
     pointer-events: none;
+}
+.camera-preview.shot-taken {
+    box-sizing: border-box;
+    animation: 200ms shotTaken;
 }
 .camera-permission {
     place-self: center;
@@ -47,6 +69,9 @@ customElements.define('os-camera', class extends HTMLElement {
     
     background: rgba(100%, 100%, 100%, 0.5);
     border: solid 1px var(--black);
+    
+    /* When video is animated, it would clip above button. Use z-index to solve this. */
+    z-index: 1;
 }
 </style>
 <video class="camera-preview" autoplay playsinline></video>
@@ -75,6 +100,19 @@ customElements.define('os-camera', class extends HTMLElement {
         return this.shadowRoot.querySelector(".camera-grant-permission");
     }
 
+    #animateShot() {
+        const preview = this.#preview;
+        preview.classList.add("shot-taken");
+        const animation = preview.getAnimations()[0];
+
+        function removeClass() {
+            preview.classList.remove("shot-taken");
+            animation.removeEventListener("finish", removeClass);
+        }
+
+        animation.addEventListener("finish", removeClass);
+    }
+
     connectedCallback() {
         this.#render();
         this.#button.addEventListener("click", this.shot)
@@ -91,6 +129,8 @@ customElements.define('os-camera', class extends HTMLElement {
     }
 
     shot() {
+        if (!this.#stream) return;
+
         const result = document.createElement("canvas")
         result.width = this.#preview.videoWidth;
         result.height = this.#preview.videoHeight;
@@ -103,6 +143,7 @@ customElements.define('os-camera', class extends HTMLElement {
             now.getUTCMinutes().toString().padStart(2, "0") + "_" +
             now.valueOf();
         OsFiles.instance.saveFile({name: name + ".jpg", contents: result.toDataURL("image/jpeg")});
+        this.#animateShot();
     }
 
     checkAndStart() {
