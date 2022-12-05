@@ -98,6 +98,28 @@ class WindowManager extends HTMLElement {
         column.remove();
     }
 
+    #findClosesColumn(node, selector = ".column") {
+        // https://stackoverflow.com/questions/54520554/custom-element-getrootnode-closest-function-crossing-multiple-parent-shadowd
+        if (!node) {
+            return null;
+        }
+
+        if (node instanceof ShadowRoot) {
+            return this.#findClosesColumn(node.host, selector);
+        }
+
+        if (node instanceof HTMLElement) {
+            if (node.matches(selector)) {
+                return node;
+            } else {
+                return this.#findClosesColumn(node.parentNode, selector);
+            }
+        }
+
+        return this.#findClosesColumn(node.parentNode, selector);
+
+    }
+
     onHover(event) {
         if (event.target.classList.contains("row-add-before") || event.target.classList.contains("row-add-after")) {
             const indicator = event.target.parentElement.querySelector(".row-add-indicator");
@@ -137,7 +159,7 @@ class WindowManager extends HTMLElement {
     }
 
     openApp(space, name, parameters) {
-        const column = space.closest(".column");
+        const column = this.#findClosesColumn(space);
         const el = this.#columnTemplate;
         const app = document.createElement(name);
         el.append(app)
