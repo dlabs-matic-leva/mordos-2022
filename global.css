@@ -31,5 +31,6 @@ html.dark-theme {
 body {
     margin: 0;
     background: var(--surface);
+    color: var(--black);
     font-family: var(--font);
 }

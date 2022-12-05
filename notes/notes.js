@@ -10,6 +10,8 @@ customElements.define("os-notes", class extends HTMLElement {
 .notepad {
     width: 100%;
     height: 100%;
+    padding: var(--spacing);
+    box-sizing: border-box;
 }
 </style>
 <div class="notepad" contenteditable></div>
@@ -25,6 +27,7 @@ customElements.define("os-notes", class extends HTMLElement {
         this.#render();
         if (this.getAttribute("filename"))
             this.attributeChangedCallback("filename", null, this.getAttribute("filename"))
+        this.#moveCaretToEnd();
         this.#notepad.focus();
         this.#notepad.addEventListener("input", this.onChange)
     }
@@ -35,6 +38,17 @@ customElements.define("os-notes", class extends HTMLElement {
 
     static get observedAttributes() {
         return ["filename"];
+    }
+
+    #moveCaretToEnd() {
+        const range = document.createRange();
+        range.selectNodeContents(this.#notepad);
+        range.collapse(false);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

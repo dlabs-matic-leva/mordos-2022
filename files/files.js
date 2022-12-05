@@ -74,6 +74,9 @@ customElements.define('os-files', class extends HTMLElement {
         if (event.target.classList.contains("files-delete")) {
             this.#files.deleteFile(event.target.parentElement.dataset.filename)
         }
+        if (event.target.classList.contains("files-open")) {
+            WindowManager.instance.openApp(event.target, "os-notes", "filename=" + event.target.parentElement.dataset.filename)
+        }
     }
 
 });
