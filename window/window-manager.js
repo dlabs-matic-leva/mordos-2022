@@ -18,8 +18,10 @@ class WindowManager extends HTMLElement {
 </template>
 <template id="template-column">
     <div class="column">
-        <button class="column-home">🏠</button>
-        <button class="column-close">❌</button>
+        <div class="column-actions">
+            <button class="column-home">🏠</button>
+            <button class="column-close">❌</button>
+        </div>
     </div>
 </template>
 <template id="template-row-controls">
@@ -126,7 +128,7 @@ class WindowManager extends HTMLElement {
         }
 
         if (event.target.classList.contains("column-close")) {
-            this.#closeColumn(event.target.parentElement)
+            this.#closeColumn(event.target)
         }
 
         if (event.target.classList.contains("column-home")) {
@@ -135,7 +137,7 @@ class WindowManager extends HTMLElement {
     }
 
     openApp(space, name, parameters) {
-        const column = space.parentElement;
+        const column = space.closest(".column");
         const el = this.#columnTemplate;
         const app = document.createElement(name);
         el.append(app)

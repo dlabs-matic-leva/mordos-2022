@@ -121,29 +121,24 @@ os-window-manager .row-split-before:hover ~ .row-split-indicator, os-window-mana
 Close functionality for column
  */
 
-
-os-window-manager .column-close, os-window-manager .column-home {
+os-window-manager .column-actions {
     position: absolute;
     top: var(--spacing);
-    width: calc(var(--spacing) * 6);
-    height: calc(var(--spacing) * 6);
-    border-radius: 50%;
-    background: rgba(100%, 100%, 100%, 0.5);
-    border: solid 1px var(--black);
+    right: var(--spacing);
     transform: translate(0, calc(var(--spacing) * -1));
     transition: transform 200ms, opacity 200ms;
     opacity: 0;
 }
 
-os-window-manager .column-close:hover, os-window-manager .column-home:hover {
+os-window-manager .column-actions:hover {
     transform: translate(0, 0);
     opacity: 1;
 }
 
-os-window-manager .column-close {
-    right: var(--spacing);
-}
-
-os-window-manager .column-home {
-    left: var(--spacing);
+os-window-manager .column-close, os-window-manager .column-home {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+    background: rgba(100%, 100%, 100%, 0.5);
+    border: solid 1px var(--black);
+    border-radius: var(--spacing)
 }
