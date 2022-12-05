@@ -11,10 +11,20 @@ class OsFilesChanged extends CustomEvent {
  */
 
 class OsFiles extends HTMLElement {
+    #key = "file-system";
     /**
-     * @type OsFile[]
+     * @returns OsFile[]
      */
-    #files = []
+    get #files() {
+        return JSON.parse(localStorage.getItem(this.#key) || "[]");
+    }
+
+    /**
+     * @param {OsFile[]} value
+     */
+    set #files(value) {
+        localStorage.setItem(this.#key, JSON.stringify(value));
+    }
 
     /**
      * @type OsFile[]
@@ -35,7 +45,7 @@ class OsFiles extends HTMLElement {
      * @param {string} name
      */
     deleteFile(name) {
-        this.#files.splice(this.#files.findIndex(f => f.name === name), 1);
+        this.#files = this.#files.filter(f => f.name !== name);
         this.dispatchEvent(new OsFilesChanged())
     }
 
