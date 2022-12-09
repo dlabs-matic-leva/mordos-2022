@@ -8,14 +8,28 @@ customElements.define('os-files', class extends HTMLElement {
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
+.files {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+}
+.files-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--spacing);
+}
 .files-preview {
     max-width: calc(var(--spacing) * 2);
     max-height: calc(var(--spacing) * 2);
     object-fit: cover;
 }
 </style>
-<h1>Files</h1>
+<div class="files">
+<os-tags-panel></os-tags-panel>
 <ul class="files-list"></ul>
+    
+</div>
 <template id="template-files-entry">
     <li class="files-entry">
         <!--suppress HtmlRequiredAltAttribute, RequiredAttributes -->
@@ -29,11 +43,14 @@ customElements.define('os-files', class extends HTMLElement {
     }
 
     get #files() {
-        return OsFiles.instance;
+        return this.shadowRoot.querySelector(".files-list");
     }
 
-    get #list() {
-        return this.shadowRoot.querySelector(".files-list");
+    /**
+     * @returns {OsTagsPanel}
+     */
+    get #tags() {
+        return this.shadowRoot.querySelector("os-tags-panel");
     }
 
     get #entryTemplate() {
@@ -43,21 +60,27 @@ customElements.define('os-files', class extends HTMLElement {
     connectedCallback() {
         this.#render();
         this.onFilesChange();
-        this.#files.addEventListener(OsFilesChanged.name, this.onFilesChange)
-        this.#list.addEventListener("click", this.onListClick)
+        OsFiles.instance.addEventListener(OsFilesChanged.name, this.onFilesChange)
+        this.#tags.addEventListener(OsTagsChanged.name, this.onFilesChange)
+        this.#files.addEventListener("click", this.onListClick)
     }
 
     disconnectedCallback() {
-        this.#files.removeEventListener(OsFilesChanged.name, this.onFilesChange)
-        this.#list.removeEventListener("click", this.onListClick)
+        OsFiles.instance.removeEventListener(OsFilesChanged.name, this.onFilesChange)
+        this.#tags.removeEventListener(OsTagsChanged.name, this.onFilesChange)
+        this.#files.removeEventListener("click", this.onListClick)
     }
 
     onFilesChange() {
-        // TODO do partial update
-        [...this.#list.children].forEach(child => {
-            this.#list.removeChild(child);
-        });
-        this.#files.files.forEach(file => {
+
+        const files = OsFiles.instance
+            .files
+            .filter(f => !this.#tags.selectedTags.length || f.tags.find(t => this.#tags.selectedTags.includes(t)));
+
+        /**
+         * @param {OsFile} file
+         */
+        const createFileEntry = (file) => {
             const entry = this.#entryTemplate.content.cloneNode(true);
             const preview = entry.querySelector(".files-preview");
             if (file.name.endsWith(".jpg")) {
@@ -67,13 +90,25 @@ customElements.define('os-files', class extends HTMLElement {
                 preview.remove();
             entry.querySelector(".files-entry").dataset.filename = file.name;
             entry.querySelector(".files-name").textContent = file.name;
-            this.#list.append(entry);
-        })
+            return entry;
+        }
+        [...this.#files.children].forEach(child => {
+            if (!files.find(f => f.name === child.dataset.filename))
+                child.remove();
+        });
+        for (let i = 0; i < files.length; i++) {
+            const el = this.#files.querySelector(`.files-entry:nth-child(${i + 1})`);
+            if (el && el.dataset.filename !== files[i].name) {
+                el.before(createFileEntry(files[i]));
+            } else if (!el) {
+                this.#files.append(createFileEntry(files[i]))
+            }
+        }
     }
 
     onListClick(event) {
         if (event.target.classList.contains("files-delete")) {
-            this.#files.deleteFile(event.target.parentElement.dataset.filename)
+            OsFiles.instance.deleteFile(event.target.parentElement.dataset.filename)
         }
         if (event.target.classList.contains("files-open")) {
             const filename = event.target.parentElement.dataset.filename;
@@ -83,5 +118,4 @@ customElements.define('os-files', class extends HTMLElement {
                 WindowManager.instance.openApp(event.target, "os-gallery", "filename=" + filename)
         }
     }
-
 });

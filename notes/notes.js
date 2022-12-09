@@ -65,7 +65,7 @@ customElements.define("os-notes", class extends HTMLElement {
         const title = now.valueOf() + ".txt";
 
         const filename = this.getAttribute("filename") || title;
-        OsFiles.instance.saveFile({name: filename, contents: text});
+        OsFiles.instance.saveFile({name: filename, contents: text, tags: ["document"]});
         if (!this.getAttribute("filename")) {
             this.setAttribute("filename", filename);
         }

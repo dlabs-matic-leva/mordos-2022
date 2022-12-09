@@ -142,7 +142,7 @@ customElements.define('os-camera', class extends HTMLElement {
             now.getUTCHours().toString().padStart(2, "0") +
             now.getUTCMinutes().toString().padStart(2, "0") + "_" +
             now.valueOf();
-        OsFiles.instance.saveFile({name: name + ".jpg", contents: result.toDataURL("image/jpeg")});
+        OsFiles.instance.saveFile({name: name + ".jpg", contents: result.toDataURL("image/jpeg"), tags: ["image"]});
         this.#animateShot();
     }
 
