@@ -2,7 +2,6 @@ customElements.define('os-files', class extends HTMLElement {
     constructor() {
         super();
         this.onFilesChange = this.onFilesChange.bind(this);
-        this.onListClick = this.onListClick.bind(this);
     }
 
     #render() {
@@ -27,18 +26,8 @@ customElements.define('os-files', class extends HTMLElement {
 </style>
 <div class="files">
 <os-tags-panel></os-tags-panel>
-<ul class="files-list"></ul>
-    
+<ul class="files-list"></ul> 
 </div>
-<template id="template-files-entry">
-    <li class="files-entry">
-        <!--suppress HtmlRequiredAltAttribute, RequiredAttributes -->
-        <img class="files-preview">
-        <span class="files-name"></span>
-        <button class="files-delete">Delete</button>
-        <button class="files-open">Open</button>
-    </li>
-</template>
        `;
     }
 
@@ -53,22 +42,16 @@ customElements.define('os-files', class extends HTMLElement {
         return this.shadowRoot.querySelector("os-tags-panel");
     }
 
-    get #entryTemplate() {
-        return this.shadowRoot.querySelector("#template-files-entry");
-    }
-
     connectedCallback() {
         this.#render();
         this.onFilesChange();
         OsFiles.instance.addEventListener(OsFilesChanged.name, this.onFilesChange)
         this.#tags.addEventListener(OsTagsChanged.name, this.onFilesChange)
-        this.#files.addEventListener("click", this.onListClick)
     }
 
     disconnectedCallback() {
         OsFiles.instance.removeEventListener(OsFilesChanged.name, this.onFilesChange)
         this.#tags.removeEventListener(OsTagsChanged.name, this.onFilesChange)
-        this.#files.removeEventListener("click", this.onListClick)
     }
 
     onFilesChange() {
@@ -81,41 +64,23 @@ customElements.define('os-files', class extends HTMLElement {
          * @param {OsFile} file
          */
         const createFileEntry = (file) => {
-            const entry = this.#entryTemplate.content.cloneNode(true);
-            const preview = entry.querySelector(".files-preview");
-            if (file.name.endsWith(".jpg")) {
-                preview.src = file.contents;
-                preview.alt = file.name;
-            } else
-                preview.remove();
-            entry.querySelector(".files-entry").dataset.filename = file.name;
-            entry.querySelector(".files-name").textContent = file.name;
-            return entry;
+            const el = document.createElement("os-file-preview");
+            el.setAttribute("filename", file.name);
+            const li = document.createElement("li");
+            li.append(el)
+            return li;
         }
         [...this.#files.children].forEach(child => {
-            if (!files.find(f => f.name === child.dataset.filename))
+            if (!files.find(f => f.name === child.getAttribute("filename")))
                 child.remove();
         });
         for (let i = 0; i < files.length; i++) {
             const el = this.#files.querySelector(`.files-entry:nth-child(${i + 1})`);
-            if (el && el.dataset.filename !== files[i].name) {
+            if (el && el.getAttribute("filename") !== files[i].name) {
                 el.before(createFileEntry(files[i]));
             } else if (!el) {
                 this.#files.append(createFileEntry(files[i]))
             }
-        }
-    }
-
-    onListClick(event) {
-        if (event.target.classList.contains("files-delete")) {
-            OsFiles.instance.deleteFile(event.target.parentElement.dataset.filename)
-        }
-        if (event.target.classList.contains("files-open")) {
-            const filename = event.target.parentElement.dataset.filename;
-            if (filename.endsWith(".txt"))
-                WindowManager.instance.openApp(event.target, "os-notes", "filename=" + filename)
-            if (filename.endsWith(".jpg"))
-                WindowManager.instance.openApp(event.target, "os-gallery", "filename=" + filename)
         }
     }
 });
