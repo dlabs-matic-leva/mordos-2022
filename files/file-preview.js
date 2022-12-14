@@ -1,6 +1,8 @@
 customElements.define('os-file-preview', class extends HTMLElement {
     constructor() {
         super();
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onContextMenu = this.onContextMenu.bind(this);
         this.onClick = this.onClick.bind(this);
     }
 
@@ -80,10 +82,14 @@ customElements.define('os-file-preview', class extends HTMLElement {
         if (this.getAttribute("filename"))
             this.attributeChangedCallback("filename", null, this.getAttribute("filename"))
         this.#root.addEventListener("click", this.onClick)
+        this.#root.addEventListener("dragstart", this.onDragStart)
+        this.#root.addEventListener("contextmenu", this.onContextMenu)
     }
 
     disconnectedCallback() {
         this.#root.removeEventListener("click", this.onClick)
+        this.#root.removeEventListener("dragstart", this.onDragStart)
+        this.#root.removeEventListener("contextmenu", this.onContextMenu)
     }
 
     static get observedAttributes() {
@@ -107,6 +113,24 @@ customElements.define('os-file-preview', class extends HTMLElement {
         else if (file.name.endsWith(".txt"))
             template.innerHTML = `<div class="file-preview document">${file.contents}</div>`
         return template.content;
+    }
+
+    onDragStart(event) {
+        const filename = this.getAttribute("filename");
+        if (!filename) return;
+        if (!event.target.classList.contains("file-preview") && !event.target.classList.contains("document"))
+            return
+
+        const file = OsFiles.instance.files.find(f => f.name === filename);
+        event.dataTransfer.setData("text/html", file.contents);
+    }
+
+    onContextMenu(event) {
+        const filename = this.getAttribute("filename");
+        if (!filename) return;
+
+        event.preventDefault();
+        window.dispatchEvent(new OsFileContextMenuOpenEvent(filename, event));
     }
 
     onClick(event) {

@@ -33,6 +33,7 @@ customElements.define('os-files', class extends HTMLElement {
 <div class="files">
 <os-tags-panel></os-tags-panel>
 <ul class="files-list"></ul> 
+<os-file-context-menu></os-file-context-menu>
 </div>
        `;
     }
