@@ -17,6 +17,12 @@ customElements.define('os-files', class extends HTMLElement {
     list-style: none;
     margin: 0;
     padding: var(--spacing);
+    display: grid;
+    grid-template: min-content / repeat(5, minmax(0, 1fr));
+    gap: calc(var(--spacing) * 2) var(--spacing);
+}
+.files-list li {
+    display: block;
 }
 .files-preview {
     max-width: calc(var(--spacing) * 2);
@@ -59,9 +65,9 @@ customElements.define('os-files', class extends HTMLElement {
         const files = OsFiles.instance
             .files
             .filter(f => {
-                if(f.tags.includes("deleted") && !this.#tags.selectedTags.includes("deleted"))
+                if (f.tags.includes("deleted") && !this.#tags.selectedTags.includes("deleted"))
                     return false;
-                if(!this.#tags.selectedTags.length)
+                if (!this.#tags.selectedTags.length)
                     return true;
                 return f.tags.find(t => this.#tags.selectedTags.includes(t));
             });

@@ -1,32 +1,56 @@
 customElements.define('os-file-preview', class extends HTMLElement {
     constructor() {
         super();
-        this.onListClick = this.onListClick.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
+
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
+:host {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--spacing);
+    box-shadow: 0 0 2px var(--shadow);
+    position: relative;
+    cursor: pointer;
+}
+:host > * {
+    flex: 1 1 100%;
+}
 .file-preview {
-    display: inline-block;
-    vertical-align: bottom;
+    width: 100%;
+    aspect-ratio: 1 / 1;
 }
 .file-preview.image {
-    height: calc(var(--spacing) * 4);
+    object-fit: cover;
 }
 .file-preview.document {
-    height: calc(var(--spacing) * 4);
-    width: calc(var(--spacing) * 6);
-    border: 1px solid var(--black);
     font-size: 8px;
+    box-shadow: 0 2px 2px -2px var(--shadow);
+    box-sizing: border-box;
+    padding: var(--spacing);
     overflow: hidden;
 }
+.file-name {
+    padding: var(--spacing);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.file-menu {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.file-menu li {
+    
+}
+.file-menu.hidden {
+    display: none
+}
 </style>
-<div class="file">
-    <span class="file-name"></span>
-    <button class="file-delete">Delete</button>
-    <button class="file-restore">Restore</button>
-    <button class="file-open">Open</button>
-</div>
+<span class="file-name"></span>
        `;
     }
 
@@ -44,26 +68,22 @@ customElements.define('os-file-preview', class extends HTMLElement {
         [...this.#root.querySelectorAll(".file-preview")].forEach(child => child.remove());
         this.#root.querySelector(".file-name").before(this.#renderFile(file));
         this.#root.querySelector(".file-name").textContent = file.name;
-        if(file.tags.includes("deleted"))
-            this.#root.querySelector(".file-delete").remove();
-        else
-            this.#root.querySelector(".file-restore").remove();
     }
 
     get #root() {
         if (!this.shadowRoot) return null;
-        return this.shadowRoot.querySelector(".file");
+        return this.shadowRoot;
     }
 
     connectedCallback() {
         this.#render();
         if (this.getAttribute("filename"))
             this.attributeChangedCallback("filename", null, this.getAttribute("filename"))
-        this.#root.addEventListener("click", this.onListClick)
+        this.#root.addEventListener("click", this.onClick)
     }
 
     disconnectedCallback() {
-        this.#root.removeEventListener("click", this.onListClick)
+        this.#root.removeEventListener("click", this.onClick)
     }
 
     static get observedAttributes() {
@@ -85,25 +105,17 @@ customElements.define('os-file-preview', class extends HTMLElement {
         if (file.name.endsWith(".jpg"))
             template.innerHTML = `<img src="${file.contents}" alt="${file.name}" class="file-preview image">`
         else if (file.name.endsWith(".txt"))
-            template.innerHTML = `<span class="file-preview document">${file.contents}</span>`
+            template.innerHTML = `<div class="file-preview document">${file.contents}</div>`
         return template.content;
     }
 
-    onListClick(event) {
+    onClick(event) {
         const filename = this.getAttribute("filename");
-        if(!filename) return;
+        if (!filename) return;
 
-        if (event.target.classList.contains("file-delete")) {
-            OsFiles.instance.deleteFile(filename)
-        }
-        if (event.target.classList.contains("file-restore")) {
-            OsFiles.instance.restoreFile(filename)
-        }
-        if (event.target.classList.contains("file-open")) {
-            if (filename.endsWith(".txt"))
-                WindowManager.instance.openApp(event.target, "os-notes", "filename=" + filename)
-            if (filename.endsWith(".jpg"))
-                WindowManager.instance.openApp(event.target, "os-gallery", "filename=" + filename)
-        }
+        if (filename.endsWith(".txt"))
+            WindowManager.instance.openApp(event.target, "os-notes", "filename=" + filename)
+        if (filename.endsWith(".jpg"))
+            WindowManager.instance.openApp(event.target, "os-gallery", "filename=" + filename)
     }
 });

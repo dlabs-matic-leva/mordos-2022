@@ -21,6 +21,9 @@ class OsTagsPanel extends HTMLElement {
     #render() {
         this.attachShadow({mode: 'open'}).innerHTML = `
 <style>
+:host {
+    box-shadow: 0 0 2px var(--shadow);
+}
 .tags {
     list-style: none;
     margin: 0;
