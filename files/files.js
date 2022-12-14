@@ -58,7 +58,13 @@ customElements.define('os-files', class extends HTMLElement {
 
         const files = OsFiles.instance
             .files
-            .filter(f => !this.#tags.selectedTags.length || f.tags.find(t => this.#tags.selectedTags.includes(t)));
+            .filter(f => {
+                if(f.tags.includes("deleted") && !this.#tags.selectedTags.includes("deleted"))
+                    return false;
+                if(!this.#tags.selectedTags.length)
+                    return true;
+                return f.tags.find(t => this.#tags.selectedTags.includes(t));
+            });
 
         /**
          * @param {OsFile} file

@@ -91,7 +91,6 @@ class OsTagsPanel extends HTMLElement {
 
         const tags = OsFiles.instance.files
             .flatMap(file => file.tags)
-            .filter(tag => tag)
             .filter((tag, index, arr) => arr.indexOf(tag) === index);
 
         const createTagEntry = (tag) => {

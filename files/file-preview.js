@@ -24,6 +24,7 @@ customElements.define('os-file-preview', class extends HTMLElement {
 <div class="file">
     <span class="file-name"></span>
     <button class="file-delete">Delete</button>
+    <button class="file-restore">Restore</button>
     <button class="file-open">Open</button>
 </div>
        `;
@@ -43,6 +44,10 @@ customElements.define('os-file-preview', class extends HTMLElement {
         [...this.#root.querySelectorAll(".file-preview")].forEach(child => child.remove());
         this.#root.querySelector(".file-name").before(this.#renderFile(file));
         this.#root.querySelector(".file-name").textContent = file.name;
+        if(file.tags.includes("deleted"))
+            this.#root.querySelector(".file-delete").remove();
+        else
+            this.#root.querySelector(".file-restore").remove();
     }
 
     get #root() {
@@ -90,6 +95,9 @@ customElements.define('os-file-preview', class extends HTMLElement {
 
         if (event.target.classList.contains("file-delete")) {
             OsFiles.instance.deleteFile(filename)
+        }
+        if (event.target.classList.contains("file-restore")) {
+            OsFiles.instance.restoreFile(filename)
         }
         if (event.target.classList.contains("file-open")) {
             if (filename.endsWith(".txt"))

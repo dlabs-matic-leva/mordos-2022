@@ -12,6 +12,7 @@ class OsFilesChanged extends CustomEvent {
 
 class OsFiles extends HTMLElement {
     #key = "file-system";
+
     /**
      * @returns OsFile[]
      */
@@ -37,7 +38,10 @@ class OsFiles extends HTMLElement {
      * @param {OsFile} file
      */
     saveFile(file) {
-        this.#files = this.#files.filter(f => f.name !== file.name).concat(file);
+        if (this.#files.find(f => f.name === file.name))
+            this.#files = this.#files.map(f => f.name !== file.name ? f : file);
+        else
+            this.#files = this.#files.concat(file);
         this.dispatchEvent(new OsFilesChanged())
     }
 
@@ -45,7 +49,29 @@ class OsFiles extends HTMLElement {
      * @param {string} name
      */
     deleteFile(name) {
-        this.#files = this.#files.filter(f => f.name !== name);
+        this.#files = this.#files.map(f => {
+            if (f.name !== name) return f;
+
+            return {
+                ...f,
+                tags: f.tags.concat("deleted").filter((t, i, arr) => arr.indexOf(t) === i)
+            }
+        });
+        this.dispatchEvent(new OsFilesChanged())
+    }
+
+    /**
+     * @param {string} name
+     */
+    restoreFile(name) {
+        this.#files = this.#files.map(f => {
+            if (f.name !== name) return f;
+
+            return {
+                ...f,
+                tags: f.tags.filter(t => t !== "deleted")
+            }
+        });
         this.dispatchEvent(new OsFilesChanged())
     }
 
