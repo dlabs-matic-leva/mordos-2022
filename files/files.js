@@ -66,11 +66,15 @@ customElements.define('os-files', class extends HTMLElement {
         const files = OsFiles.instance
             .files
             .filter(f => {
-                if (f.tags.includes("deleted") && !this.#tags.selectedTags.includes("deleted"))
+                if (this.#tags.selectedTags.includes("deleted") && !f.tags.includes("deleted"))
+                    return false;
+                if (!this.#tags.selectedTags.includes("deleted") && f.tags.includes("deleted"))
                     return false;
                 if (!this.#tags.selectedTags.length)
                     return true;
-                return f.tags.find(t => this.#tags.selectedTags.includes(t));
+                if (this.#tags.selectedTags.length === 1 && this.#tags.selectedTags[0] === "deleted")
+                    return true;
+                return f.tags.filter(t => t !== "deleted").find(t => this.#tags.selectedTags.includes(t));
             });
 
         /**

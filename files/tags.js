@@ -92,9 +92,12 @@ class OsTagsPanel extends HTMLElement {
 
     onFilesChange() {
 
-        const tags = OsFiles.instance.files
-            .flatMap(file => file.tags)
-            .filter((tag, index, arr) => arr.indexOf(tag) === index);
+        const tags = [
+            ...OsFiles.instance.files
+                .flatMap(file => file.tags)
+                .filter((tag, index, arr) => arr.indexOf(tag) === index)
+                .filter(t => t !== "deleted"),
+            "deleted"];
 
         const createTagEntry = (tag) => {
             const entry = this.#template.content.cloneNode(true);
