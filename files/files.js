@@ -20,6 +20,7 @@ customElements.define('os-files', class extends HTMLElement {
     display: grid;
     grid-template: min-content / repeat(5, minmax(0, 1fr));
     gap: calc(var(--spacing) * 2) var(--spacing);
+    overflow: auto;
 }
 .files-list li {
     display: block;

@@ -23,6 +23,7 @@ class OsTagsPanel extends HTMLElement {
 <style>
 :host {
     box-shadow: 0 0 2px var(--shadow);
+    overflow: auto;
 }
 .tags-title {
     margin: 0;
