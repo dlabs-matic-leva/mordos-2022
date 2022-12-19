@@ -30,7 +30,10 @@ customElements.define('os-file-context-menu', class extends HTMLElement {
     position: fixed;
 }
 .file-menu {
-    padding: 0;
+    padding: var(--spacing);
+    background: var(--surface);
+    border-radius: 0 var(--spacing) var(--spacing) var(--spacing);
+    box-shadow: 0 0 2px var(--shadow);
     margin: 0;
     list-style: none;
 }
@@ -43,6 +46,28 @@ customElements.define('os-file-context-menu', class extends HTMLElement {
 }
 .file-menu.deleted-file .file-delete {
     display: none;
+}
+.file-delete, .file-restore {
+    padding: var(--spacing) calc(var(--spacing) * 2);
+    border: 0;
+    background: var(--surface);
+    color: var(--onSurface);
+    border-radius: var(--spacing);
+    box-shadow: 0 0 2px var(--shadow);
+}
+@media (prefers-color-scheme: light) {
+    .file-delete:active, .file-restore:active {
+        filter: brightness(95%);
+    }
+}
+@media (prefers-color-scheme: dark) {
+    .file-delete:active, .file-restore:active {
+        filter: brightness(125%);
+    }
+}
+.file-delete:focus, .file-delete:focus-visible, .file-restore:focus, .file-restore:focus-visible {
+    box-shadow: 0 0 2px var(--onSurface);
+    outline: none;
 }
 </style>
 <menu class="file-menu hidden">

@@ -24,6 +24,10 @@ class OsTagsPanel extends HTMLElement {
 :host {
     box-shadow: 0 0 2px var(--shadow);
 }
+.tags-title {
+    margin: 0;
+    padding: var(--spacing) var(--spacing) 0 var(--spacing);
+}
 .tags {
     list-style: none;
     margin: 0;
@@ -61,7 +65,8 @@ class OsTagsPanel extends HTMLElement {
     pointer-events: none;
 }
 </style>
-<ul class="tags"></ul>
+<h4 id="tags-list" class="tags-title">Tags</h4>
+<ul class="tags" aria-labelledby="tags-list"></ul>
 <template id="template-tag-entry">
     <li class="tag-entry" role="button" tabindex="0" >
         <span class="tag-name"></span>

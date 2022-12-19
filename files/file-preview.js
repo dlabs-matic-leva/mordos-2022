@@ -13,6 +13,7 @@ customElements.define('os-file-preview', class extends HTMLElement {
     display: flex;
     flex-direction: column;
     border-radius: var(--spacing);
+    overflow: hidden;
     box-shadow: 0 0 2px var(--shadow);
     position: relative;
     cursor: pointer;
