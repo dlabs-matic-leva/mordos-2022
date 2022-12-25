@@ -25,6 +25,7 @@ customElements.define('os-desktop', class extends HTMLElement {
     .app-background {
         background: url(/window/devin-kaselnak-kEuew3XMeEA-unsplash.jpg) center / cover no-repeat;
     }    
+}
 
 @media (prefers-color-scheme: light) {
     .app-background {

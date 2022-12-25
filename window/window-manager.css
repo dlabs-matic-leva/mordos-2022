@@ -138,7 +138,7 @@ os-window-manager .column-close, os-window-manager .column-home {
     width: calc(var(--spacing) * 6);
     height: calc(var(--spacing) * 6);
     background: rgba(100%, 100%, 100%, 0.5);
-    border: solid 1px rgb(var(--black));
+    border: solid 1px var(--black);
     border-radius: var(--spacing)
 }
 os-window-manager[data-num-of-apps="1"] .column-close {
