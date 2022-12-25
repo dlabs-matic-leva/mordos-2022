@@ -46,6 +46,8 @@ right text, text from note will be copied to this app. This feature is using [dr
 * Innovative tiling window manager. I mean, it's not that innovative, it's been around for 40 years 😅. Anyway, approach
 any edge of app until you see an indicator to split your screen. Click it and screen will split in 2. You can also repeat
 that as many times as you want and in any direction you want. Close any app by hovering over top right corner.
+* Simple sepia filter with Writable streams. Filter itself is actually stolen from interwebs but writable streams are 
+sooo cool, I was able to transform stream as it was coming from webcam.
 
 ## Checklist:
 
@@ -59,7 +61,8 @@ that as many times as you want and in any direction you want. Close any app by h
 * [x] look familiar to other systems (probably)
 * [ ] RSS reader
 * [x] camera app
-* [ ] 80s filter
+* [x] 80s filter
+  * it works only in Chrome and Safari 
 * [x] Gallery app
   * click on any image in Files app
 * [ ] images from different sources
