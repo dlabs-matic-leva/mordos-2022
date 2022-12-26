@@ -23,13 +23,13 @@ customElements.define('os-desktop', class extends HTMLElement {
 }
 @media (prefers-color-scheme: dark) {
     .app-background {
-        background: url(/window/devin-kaselnak-kEuew3XMeEA-unsplash.jpg) center / cover no-repeat;
+        background: url(window/devin-kaselnak-kEuew3XMeEA-unsplash.jpg) center / cover no-repeat;
     }    
 }
 
 @media (prefers-color-scheme: light) {
     .app-background {
-        background: url(/window/martin-bennie-oJxoDn1NfZQ-unsplash.jpg) center / cover no-repeat;
+        background: url(window/martin-bennie-oJxoDn1NfZQ-unsplash.jpg) center / cover no-repeat;
     }     
 }
 
