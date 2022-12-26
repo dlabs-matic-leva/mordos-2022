@@ -138,14 +138,23 @@ class WindowManager extends HTMLElement {
     onHover(event) {
         if (event.target.classList.contains("row-add-before") || event.target.classList.contains("row-add-after")) {
             const indicator = event.target.parentElement.querySelector(".row-add-indicator");
-            const {offsetY: y} = event;
-            indicator.style.transform = `translate(0, ${y}px)`
+            const {offsetY} = event;
+            const ratio = offsetY / event.target.getBoundingClientRect().height;
+            const rows = [...this.querySelectorAll(".row")];
+            const index = Math.round((rows.length - 1) * ratio)
+            const box = rows[index].getBoundingClientRect();
+            indicator.style.top = `${box.y + box.height / 2}px`
         }
 
         if (event.target.classList.contains("row-split-before") || event.target.classList.contains("row-split-after")) {
             const indicator = event.target.parentElement.querySelector(".row-split-indicator");
-            const {offsetX: x} = event;
-            indicator.style.transform = `translate(${x}px, 0)`
+            const {offsetX} = event;
+            const ratio = offsetX / event.target.getBoundingClientRect().width;
+            const row = event.target.parentElement;
+            const columns = row.querySelectorAll(".column");
+            const index = Math.round((columns.length - 1) * ratio)
+            const box = columns[index].getBoundingClientRect();
+            indicator.style.left = `${box.x + box.width / 2}px`
         }
     }
 

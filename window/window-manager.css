@@ -54,7 +54,7 @@ os-window-manager {
 
 os-window-manager .row-add-before, os-window-manager .row-add-after {
     position: absolute;
-    width: var(--spacing);
+    width: calc(var(--spacing) * 2);
     height: 100%;
     cursor: cell;
     z-index: 1;
@@ -72,14 +72,22 @@ os-window-manager .row-add-indicator {
     position: absolute;
     height: var(--spacing);
     width: 100%;
-    background: green;
+    background: var(--primary);
     pointer-events: none;
-    display: none;
     z-index: 1;
+    transform: scaleX(0);
+    transition: 200ms transform;
 }
 
-os-window-manager .row-add-before:hover ~ .row-add-indicator, os-window-manager .row-add-after:hover ~ .row-add-indicator {
-    display: block;
+os-window-manager .row-add-before:hover ~ .row-add-indicator {
+    transform-origin: center left;
+    transform: scaleX(1);
+}
+
+
+os-window-manager .row-add-after:hover ~ .row-add-indicator {
+    transform-origin: center right;
+    transform: scaleX(1);
 }
 
 /*
@@ -88,7 +96,7 @@ Row split (top and bottom edge of each row)
 
 os-window-manager .row-split-before, os-window-manager .row-split-after {
     position: absolute;
-    height: var(--spacing);
+    height: calc(var(--spacing) * 2);
     width: 100%;
     cursor: cell;
     z-index: 1;
@@ -106,14 +114,20 @@ os-window-manager .row-split-indicator {
     position: absolute;
     width: var(--spacing);
     height: 100%;
-    background: green;
+    background: var(--primary);
     pointer-events: none;
-    display: none;
     z-index: 1;
+    transform: scaleY(0);
+    transition: 200ms transform;
 }
 
-os-window-manager .row-split-before:hover ~ .row-split-indicator, os-window-manager .row-split-after:hover ~ .row-split-indicator {
-    display: block;
+os-window-manager .row-split-before:hover ~ .row-split-indicator {
+    transform-origin: top center;
+    transform: scaleY(1);
+}
+os-window-manager .row-split-after:hover ~ .row-split-indicator {
+    transform-origin: bottom center;
+    transform: scaleY(1);
 }
 
 /*
@@ -122,11 +136,14 @@ Close functionality for column
 
 os-window-manager .column-actions {
     position: absolute;
-    top: var(--spacing);
-    right: var(--spacing);
+    top: calc(var(--spacing) * 2);
+    right: calc(var(--spacing) * 2);
     transform: translate(0, calc(var(--spacing) * -1));
     transition: transform 200ms, opacity 200ms;
     opacity: 0;
+    z-index: 10;
+    display: flex;
+    gap: var(--spacing);
 }
 
 os-window-manager .column-actions:hover {
